@@ -74,6 +74,8 @@ Thumbs.db
 # Logs
 logs
 *.log
+test_results.log
+all_endpoints_test.log
 
 # Coverage reports
 htmlcov/
@@ -87,3 +89,20 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 .pytest
+
+# Frontend specific
+/frontend/.env
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
+/frontend/node_modules
+/frontend/build
+/frontend/dist
+/frontend/.next
+/frontend/out
+
+# Package manager files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
