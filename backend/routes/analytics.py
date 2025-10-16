@@ -3,15 +3,12 @@ from datetime import datetime, timedelta
 from database import db
 from models import Habit, CheckIn
 
-# Create blueprint for analytics routes
 analytics_bp = Blueprint('analytics', __name__)
 
 @analytics_bp.route('/habits/<int:habit_id>/streak', methods=['GET'])
 def get_habit_streak(habit_id):
-    """Calculate current streak for a specific habit"""
     habit = Habit.query.get_or_404(habit_id)
     
-    # Logic: Get all completed check-ins, ordered by date descending
     checkins = CheckIn.query.filter_by(
         habit_id=habit_id, 
         completed=True
@@ -25,7 +22,6 @@ def get_habit_streak(habit_id):
             'longest_streak': 0
         })
     
-    # Logic: Calculate current streak
     current_streak = 0
     longest_streak = 0
     temp_streak = 0
@@ -38,23 +34,20 @@ def get_habit_streak(habit_id):
             temp_streak = 1
             longest_streak = 1
         else:
-            # Logic: Check if dates are consecutive (difference of 1 day)
             days_diff = (last_date - checkin.date).days
             
-            if days_diff == 1:  # Consecutive day
+            if days_diff == 1:
                 temp_streak += 1
                 if temp_streak > longest_streak:
                     longest_streak = temp_streak
                 
-                # Logic: Only count current streak if we're still in it
                 if current_streak == temp_streak - 1:
                     current_streak = temp_streak
-            elif days_diff > 1:  # Gap in dates
-                if current_streak == temp_streak:  # We were in current streak
-                    current_streak = 0  # Streak broken
+            elif days_diff > 1:
+                if current_streak == temp_streak:
+                    current_streak = 0
                 temp_streak = 1
                 last_date = checkin.date
-            # If days_diff == 0, it's the same date, skip
     
     return jsonify({
         'habit_id': habit_id,
@@ -66,10 +59,8 @@ def get_habit_streak(habit_id):
 
 @analytics_bp.route('/habits/<int:habit_id>/stats', methods=['GET'])
 def get_habit_stats(habit_id):
-    """Get comprehensive statistics for a specific habit"""
     habit = Habit.query.get_or_404(habit_id)
     
-    # Logic: Get all check-ins for this habit
     all_checkins = CheckIn.query.filter_by(habit_id=habit_id).all()
     completed_checkins = CheckIn.query.filter_by(habit_id=habit_id, completed=True).all()
     
@@ -77,10 +68,8 @@ def get_habit_stats(habit_id):
     total_completed = len(completed_checkins)
     success_rate = (total_completed / total_checkins * 100) if total_checkins > 0 else 0
     
-    # Logic: Calculate days since start
     days_since_start = (datetime.now().date() - habit.start_date).days + 1
     
-    # Logic: Get check-ins by day of week
     checkins_by_day = {}
     for checkin in completed_checkins:
         day_name = checkin.date.strftime('%A')
@@ -100,22 +89,18 @@ def get_habit_stats(habit_id):
 
 @analytics_bp.route('/habits/<int:habit_id>/calendar', methods=['GET'])
 def get_habit_calendar(habit_id):
-    """Get calendar view of check-ins for a specific habit"""
     habit = Habit.query.get_or_404(habit_id)
     
-    # Logic: Get date range from query params or default to last 30 days
     days_back = request.args.get('days', 30, type=int)
     end_date = datetime.now().date()
     start_date = end_date - timedelta(days=days_back)
     
-    # Logic: Get all check-ins in date range
     checkins = CheckIn.query.filter(
         CheckIn.habit_id == habit_id,
         CheckIn.date >= start_date,
         CheckIn.date <= end_date
     ).all()
     
-    # Logic: Create calendar data structure
     calendar_data = {}
     for checkin in checkins:
         date_str = checkin.date.isoformat()
@@ -139,8 +124,6 @@ def get_habit_calendar(habit_id):
 
 @analytics_bp.route('/habits/analytics', methods=['GET'])
 def get_overall_analytics():
-    """Get overall analytics across all habits"""
-    # Logic: Get all habits and their check-ins
     habits = Habit.query.all()
     
     total_habits = len(habits)
@@ -156,11 +139,9 @@ def get_overall_analytics():
         total_checkins += len(habit_checkins)
         total_completed += len(habit_completed)
         
-        # Logic: Check if habit has any streak (simplified)
         if len(habit_completed) > 0:
             habits_with_streaks += 1
         
-        # Logic: Category statistics
         category = habit.category
         if category not in category_stats:
             category_stats[category] = {'count': 0, 'completed': 0, 'total': 0}
