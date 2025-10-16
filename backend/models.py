@@ -4,19 +4,11 @@ from database import db
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False, unique=True)
-    color = db.Column(db.String(7), default='#3B82F6')
-    icon = db.Column(db.String(20), default='star')
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    habits = db.relationship('Habit', backref='category_ref', lazy=True)
     
     def to_dict(self):
         return {
             'id': self.id,
-            'name': self.name,
-            'color': self.color,
-            'icon': self.icon,
-            'created_at': self.created_at.isoformat() if self.created_at else None
+            'name': self.name
         }
 
 class Habit(db.Model):
@@ -25,7 +17,6 @@ class Habit(db.Model):
     description = db.Column(db.Text)
     frequency = db.Column(db.String(20), nullable=False)
     category = db.Column(db.String(50), nullable=False)
-    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=True)
     start_date = db.Column(db.Date, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     

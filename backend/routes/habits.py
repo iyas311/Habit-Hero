@@ -3,17 +3,21 @@ from datetime import datetime
 from database import db
 from models import Habit
 
+# Create blueprint for habit routes
 habits_bp = Blueprint('habits', __name__)
 
 @habits_bp.route('/habits', methods=['GET'])
 def get_habits():
+    """Get all habits"""
     habits = Habit.query.all()
     return jsonify([habit.to_dict() for habit in habits])
 
 @habits_bp.route('/habits', methods=['POST'])
 def create_habit():
+    """Create a new habit"""
     data = request.get_json()
     
+    # Validate required fields
     if not data or not data.get('name') or not data.get('frequency') or not data.get('category'):
         return jsonify({"error": "Missing required fields: name, frequency, category"}), 400
     
@@ -37,11 +41,13 @@ def create_habit():
 
 @habits_bp.route('/habits/<int:habit_id>', methods=['GET'])
 def get_habit(habit_id):
+    """Get a specific habit"""
     habit = Habit.query.get_or_404(habit_id)
     return jsonify(habit.to_dict())
 
 @habits_bp.route('/habits/<int:habit_id>', methods=['PUT'])
 def update_habit(habit_id):
+    """Update a specific habit"""
     habit = Habit.query.get_or_404(habit_id)
     data = request.get_json()
     
@@ -69,6 +75,7 @@ def update_habit(habit_id):
 
 @habits_bp.route('/habits/<int:habit_id>', methods=['DELETE'])
 def delete_habit(habit_id):
+    """Delete a specific habit"""
     habit = Habit.query.get_or_404(habit_id)
     
     try:

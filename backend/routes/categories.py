@@ -14,13 +14,11 @@ def create_category():
     data = request.get_json()
     
     if not data or not data.get('name'):
-        return jsonify({"error": "Category name is required"}), 400
+        return jsonify({"error": "Name is required"}), 400
     
     try:
         category = Category(
-            name=data['name'],
-            color=data.get('color', '#3B82F6'),
-            icon=data.get('icon', 'star')
+            name=data['name']
         )
         
         db.session.add(category)
@@ -48,10 +46,6 @@ def update_category(category_id):
     try:
         if 'name' in data:
             category.name = data['name']
-        if 'color' in data:
-            category.color = data['color']
-        if 'icon' in data:
-            category.icon = data['icon']
         
         db.session.commit()
         return jsonify(category.to_dict())
@@ -69,40 +63,6 @@ def delete_category(category_id):
         db.session.commit()
         return jsonify({"message": "Category deleted successfully"}), 200
         
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"error": str(e)}), 400
-
-@categories_bp.route('/categories/populate', methods=['POST'])
-def populate_default_categories():
-    default_categories = [
-        {'name': 'Health', 'color': '#10B981', 'icon': 'heart'},
-        {'name': 'Work', 'color': '#3B82F6', 'icon': 'briefcase'},
-        {'name': 'Learning', 'color': '#8B5CF6', 'icon': 'book'},
-        {'name': 'Personal', 'color': '#F59E0B', 'icon': 'user'},
-        {'name': 'Fitness', 'color': '#EF4444', 'icon': 'dumbbell'},
-        {'name': 'Mindfulness', 'color': '#06B6D4', 'icon': 'brain'}
-    ]
-    
-    created_categories = []
-    
-    for cat_data in default_categories:
-        existing = Category.query.filter_by(name=cat_data['name']).first()
-        if not existing:
-            category = Category(
-                name=cat_data['name'],
-                color=cat_data['color'],
-                icon=cat_data['icon']
-            )
-            db.session.add(category)
-            created_categories.append(cat_data['name'])
-    
-    try:
-        db.session.commit()
-        return jsonify({
-            "message": f"Created {len(created_categories)} default categories",
-            "created": created_categories
-        }), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 400
