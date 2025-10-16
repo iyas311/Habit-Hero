@@ -1,8 +1,8 @@
 from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from datetime import datetime
 import os
+from models import db, Habit, CheckIn
 
 app = Flask(__name__)
 
@@ -10,11 +10,9 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///habits.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)
+# Initialize extensions
+db.init_app(app)
 CORS(app)
-
-
-from models import Habit, CheckIn
 
 # Create tables
 with app.app_context():
