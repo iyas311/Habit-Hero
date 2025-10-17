@@ -1,56 +1,76 @@
-/* Styles for the main layout */
+/* Modern layout with gradients and improved spacing */
 
 .layout {
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
 /* Main content area */
 .main-content {
   flex: 1;
-  padding: 2rem 0;
-  background-color: #f8f9fa;
+  margin-left: 280px; /* Match sidebar width */
+  padding: 2rem;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  transition: margin-left 0.3s ease;
 }
 
 .content-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0;
 }
 
-/* Footer */
-.footer {
-  background-color: #34495e;
-  color: white;
-  padding: 1rem 0;
-  margin-top: auto;
+/* Page content styling */
+.page-content {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
 }
 
-.footer-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  text-align: center;
+.page-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
 }
 
-.footer-content p {
-  margin: 0;
-  font-size: 0.9rem;
-  opacity: 0.8;
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .main-content {
+    margin-left: 240px;
+  }
 }
 
-/* Mobile Responsive */
 @media (max-width: 768px) {
   .main-content {
-    padding: 1rem 0;
+    margin-left: 200px;
+    padding: 1rem;
   }
-
-  .content-container {
-    padding: 0 1rem;
+  
+  .page-content {
+    padding: 1.5rem;
+    border-radius: 16px;
   }
+}
 
-  .footer-content {
-    padding: 0 1rem;
+@media (max-width: 640px) {
+  .main-content {
+    margin-left: 0;
+    padding: 1rem;
+  }
+  
+  .page-content {
+    padding: 1rem;
+    border-radius: 12px;
   }
 }

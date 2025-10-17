@@ -1,38 +1,274 @@
-.App {
-  text-align: center;
+/* Modern app styling with gradients and improved aesthetics */
+
+/* Global styles */
+* {
+  box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   min-height: 100vh;
+}
+
+/* Page containers */
+.dashboard,
+.habits-page,
+.analytics-page,
+.categories-page {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard::before,
+.habits-page::before,
+.analytics-page::before,
+.categories-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Page headers */
+.dashboard h1,
+.habits-page h1,
+.analytics-page h1,
+.categories-page h1 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dashboard p,
+.habits-page p,
+.analytics-page p,
+.categories-page p {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+/* Page header styles */
+.page-header {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.page-header h1 {
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.page-header p {
+  margin-bottom: 0;
+  flex: 1;
+}
+
+/* Placeholder content */
+.dashboard-placeholder,
+.habits-placeholder,
+.analytics-placeholder,
+.categories-placeholder {
+  background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.1);
+  border-left: 4px solid #667eea;
+}
+
+.dashboard-placeholder h2,
+.habits-placeholder h2,
+.analytics-placeholder h2,
+.categories-placeholder h2 {
+  color: #667eea;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.dashboard-placeholder ul,
+.habits-placeholder ul,
+.analytics-placeholder ul,
+.categories-placeholder ul {
+  text-align: left;
+  color: #555;
+  list-style: none;
+  padding: 0;
+}
+
+.dashboard-placeholder li,
+.habits-placeholder li,
+.analytics-placeholder li,
+.categories-placeholder li {
+  margin-bottom: 0.75rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.dashboard-placeholder li::before,
+.habits-placeholder li::before,
+.analytics-placeholder li::before,
+.categories-placeholder li::before {
+  content: '✨';
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  gap: 0.5rem;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
-.App-link {
-  color: #61dafb;
+.btn-primary:hover {
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.add-habit-btn {
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+/* 404 Page */
+.not-found {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.not-found h1 {
+  color: #e74c3c;
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.not-found p {
+  color: #7f8c8d;
+  font-size: 1.2rem;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .dashboard,
+  .habits-page,
+  .analytics-page,
+  .categories-page {
+    padding: 1.5rem;
+    border-radius: 16px;
+    margin: 1rem;
   }
-  to {
-    transform: rotate(360deg);
+
+  .dashboard h1,
+  .habits-page h1,
+  .analytics-page h1,
+  .categories-page h1 {
+    font-size: 2rem;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .add-habit-btn {
+    align-self: flex-start;
+  }
+
+  .dashboard-placeholder,
+  .habits-placeholder,
+  .analytics-placeholder,
+  .categories-placeholder {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard,
+  .habits-page,
+  .analytics-page,
+  .categories-page {
+    padding: 1rem;
+    border-radius: 12px;
+    margin: 0.5rem;
+  }
+
+  .dashboard h1,
+  .habits-page h1,
+  .analytics-page h1,
+  .categories-page h1 {
+    font-size: 1.75rem;
+  }
+
+  .btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
   }
 }

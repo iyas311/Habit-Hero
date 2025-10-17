@@ -1,25 +1,39 @@
 import React from 'react';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Layout from './components/Layout';
+import Dashboard from './pages/Dashboard';
+import HabitsPage from './pages/HabitsPage';
+import AnalyticsPage from './pages/AnalyticsPage';
+import CategoriesPage from './pages/CategoriesPage';
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Layout>
+        <Routes>
+          {/* Dashboard route - this is the default page */}
+          <Route path="/" element={<Dashboard />} />
+          
+          {/* Habits management page */}
+          <Route path="/habits" element={<HabitsPage />} />
+          
+          {/* Analytics page */}
+          <Route path="/analytics" element={<AnalyticsPage />} />
+          
+          {/* Categories management page */}
+          <Route path="/categories" element={<CategoriesPage />} />
+          
+          {/* 404 page - if someone visits a page that doesn't exist */}
+          <Route path="*" element={
+            <div className="not-found">
+              <h1>404 - Page Not Found</h1>
+              <p>The page you're looking for doesn't exist.</p>
+            </div>
+          } />
+        </Routes>
+      </Layout>
+    </Router>
   );
 }
 

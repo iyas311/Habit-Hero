@@ -1,0 +1,149 @@
+/* Modern vertical sidebar with gradients and smooth animations */
+
+.sidebar {
+  width: 280px;
+  height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+/* Brand Section */
+.sidebar-brand {
+  padding: 2rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+.brand-icon {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.brand-name {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.brand-tagline {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.8rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Navigation */
+.sidebar-nav {
+  flex: 1;
+  padding: 2rem 0;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
+  margin: 0.25rem 1rem;
+  border-radius: 12px;
+}
+
+.sidebar-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  transform: translateX(4px);
+}
+
+.sidebar-link.active {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar-link.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: white;
+  border-radius: 0 2px 2px 0;
+}
+
+.sidebar-icon {
+  font-size: 1.2rem;
+  margin-right: 1rem;
+  width: 24px;
+  text-align: center;
+}
+
+.sidebar-label {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+
+/* Mobile responsive */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 240px;
+  }
+  
+  .sidebar-brand {
+    padding: 1.5rem 1rem;
+  }
+  
+  .brand-name {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px;
+  }
+  
+  .sidebar-link {
+    padding: 0.75rem 1rem;
+    margin: 0.25rem 0.5rem;
+  }
+  
+  .sidebar-label {
+    font-size: 0.9rem;
+  }
+  
+  .brand-name {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .sidebar.open {
+    transform: translateX(0);
+  }
+}

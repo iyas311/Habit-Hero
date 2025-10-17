@@ -1,7 +1,7 @@
 // This file handles all communication with our Flask backend
 // Think of it as a "messenger" that sends requests and gets responses
 
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import {
   Habit,
   CheckIn,
@@ -41,7 +41,7 @@ const api = axios.create({
  */
 export const getHabits = async (): Promise<Habit[]> => {
   try {
-    const response: AxiosResponse<Habit[]> = await api.get('/habits');
+    const response = await api.get<Habit[]>('/habits');
     return response.data;
   } catch (error) {
     console.error('Error fetching habits:', error);
@@ -56,7 +56,7 @@ export const getHabits = async (): Promise<Habit[]> => {
  */
 export const createHabit = async (habitData: CreateHabitData): Promise<Habit> => {
   try {
-    const response: AxiosResponse<Habit> = await api.post('/habits', habitData);
+    const response = await api.post<Habit>('/habits', habitData);
     return response.data;
   } catch (error) {
     console.error('Error creating habit:', error);
@@ -71,7 +71,7 @@ export const createHabit = async (habitData: CreateHabitData): Promise<Habit> =>
  */
 export const getHabit = async (id: number): Promise<Habit> => {
   try {
-    const response: AxiosResponse<Habit> = await api.get(`/habits/${id}`);
+    const response = await api.get<Habit>(`/habits/${id}`);
     return response.data;
   } catch (error) {
     console.error(`Error fetching habit ${id}:`, error);
@@ -87,7 +87,7 @@ export const getHabit = async (id: number): Promise<Habit> => {
  */
 export const updateHabit = async (id: number, updates: UpdateHabitData): Promise<Habit> => {
   try {
-    const response: AxiosResponse<Habit> = await api.put(`/habits/${id}`, updates);
+    const response = await api.put<Habit>(`/habits/${id}`, updates);
     return response.data;
   } catch (error) {
     console.error(`Error updating habit ${id}:`, error);
@@ -133,7 +133,7 @@ export const getHabitCheckins = async (
     const queryString = params.toString();
     const url = `/habits/${habitId}/checkins${queryString ? `?${queryString}` : ''}`;
     
-    const response: AxiosResponse<PaginatedResponse<CheckIn>> = await api.get(url);
+    const response = await api.get<any>(url);
     return response.data.checkins || response.data;
   } catch (error) {
     console.error(`Error fetching check-ins for habit ${habitId}:`, error);
@@ -152,7 +152,7 @@ export const createCheckin = async (
   checkinData: CreateCheckInData
 ): Promise<CheckIn> => {
   try {
-    const response: AxiosResponse<CheckIn> = await api.post(
+    const response = await api.post<CheckIn>(
       `/habits/${habitId}/checkin`,
       checkinData
     );
@@ -174,7 +174,7 @@ export const updateCheckin = async (
   updates: UpdateCheckInData
 ): Promise<CheckIn> => {
   try {
-    const response: AxiosResponse<CheckIn> = await api.put(
+    const response = await api.put<CheckIn>(
       `/checkins/${checkinId}`,
       updates
     );
@@ -210,7 +210,7 @@ export const deleteCheckin = async (checkinId: number): Promise<void> => {
  */
 export const getHabitStreak = async (habitId: number): Promise<HabitStreak> => {
   try {
-    const response: AxiosResponse<HabitStreak> = await api.get(`/habits/${habitId}/streak`);
+    const response = await api.get<HabitStreak>(`/habits/${habitId}/streak`);
     return response.data;
   } catch (error) {
     console.error(`Error fetching streak for habit ${habitId}:`, error);
@@ -225,7 +225,7 @@ export const getHabitStreak = async (habitId: number): Promise<HabitStreak> => {
  */
 export const getHabitStats = async (habitId: number): Promise<HabitStats> => {
   try {
-    const response: AxiosResponse<HabitStats> = await api.get(`/habits/${habitId}/stats`);
+    const response = await api.get<HabitStats>(`/habits/${habitId}/stats`);
     return response.data;
   } catch (error) {
     console.error(`Error fetching stats for habit ${habitId}:`, error);
@@ -244,7 +244,7 @@ export const getHabitCalendar = async (
   days: number = 30
 ): Promise<CalendarData> => {
   try {
-    const response: AxiosResponse<CalendarData> = await api.get(
+    const response = await api.get<CalendarData>(
       `/habits/${habitId}/calendar?days=${days}`
     );
     return response.data;
@@ -260,7 +260,7 @@ export const getHabitCalendar = async (
  */
 export const getOverallAnalytics = async (): Promise<OverallAnalytics> => {
   try {
-    const response: AxiosResponse<OverallAnalytics> = await api.get('/habits/analytics');
+    const response = await api.get<OverallAnalytics>('/habits/analytics');
     return response.data;
   } catch (error) {
     console.error('Error fetching overall analytics:', error);
@@ -278,7 +278,7 @@ export const getOverallAnalytics = async (): Promise<OverallAnalytics> => {
  */
 export const getCategories = async (): Promise<Category[]> => {
   try {
-    const response: AxiosResponse<Category[]> = await api.get('/categories');
+    const response = await api.get<Category[]>('/categories');
     return response.data;
   } catch (error) {
     console.error('Error fetching categories:', error);
@@ -293,7 +293,7 @@ export const getCategories = async (): Promise<Category[]> => {
  */
 export const createCategory = async (name: string): Promise<Category> => {
   try {
-    const response: AxiosResponse<Category> = await api.post('/categories', { name });
+    const response = await api.post<Category>('/categories', { name });
     return response.data;
   } catch (error) {
     console.error('Error creating category:', error);
@@ -308,7 +308,7 @@ export const createCategory = async (name: string): Promise<Category> => {
  */
 export const getCategory = async (id: number): Promise<Category> => {
   try {
-    const response: AxiosResponse<Category> = await api.get(`/categories/${id}`);
+    const response = await api.get<Category>(`/categories/${id}`);
     return response.data;
   } catch (error) {
     console.error(`Error fetching category ${id}:`, error);
@@ -327,7 +327,7 @@ export const updateCategory = async (
   updates: { name: string }
 ): Promise<Category> => {
   try {
-    const response: AxiosResponse<Category> = await api.put(`/categories/${id}`, updates);
+    const response = await api.put<Category>(`/categories/${id}`, updates);
     return response.data;
   } catch (error) {
     console.error(`Error updating category ${id}:`, error);
