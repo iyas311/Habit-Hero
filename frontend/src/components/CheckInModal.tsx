@@ -45,7 +45,7 @@ const CheckInModal: React.FC<CheckInModalProps> = ({
     
     try {
       const checkinData = {
-        date: new Date().toISOString().split('T')[0], // Today's date
+        date: new Date().toLocaleDateString('en-CA'), // Today's date in local timezone
         completed: completed,
         notes: notes.trim()
       };

@@ -79,11 +79,14 @@ const AnalyticsOverview: React.FC = () => {
         let currentDate = new Date(today);
         currentStreak = 0;
         
-        for (let i = 0; i < 30; i++) {
-          const dateStr = currentDate.toISOString().split('T')[0];
-          const hasCompleted = completedCheckins.some(checkin => checkin.date === dateStr);
+        // Create a set of completed dates for faster lookup
+        const completedDates = new Set(completedCheckins.map(checkin => checkin.date));
+        
+        // Check consecutive days backwards from today (up to 365 days max)
+        for (let i = 0; i < 365; i++) {
+          const dateStr = currentDate.toLocaleDateString('en-CA'); // Returns YYYY-MM-DD in local timezone
           
-          if (hasCompleted) {
+          if (completedDates.has(dateStr)) {
             currentStreak++;
             currentDate.setDate(currentDate.getDate() - 1);
           } else {

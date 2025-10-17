@@ -16,8 +16,8 @@ const QuickStats: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Get today's date in YYYY-MM-DD format
-  const today = new Date().toISOString().split('T')[0];
+  // Get today's date in YYYY-MM-DD format (using local timezone)
+  const today = new Date().toLocaleDateString('en-CA'); // Returns YYYY-MM-DD in local timezone
 
   // Calculate statistics
   const loadStats = useCallback(async () => {
@@ -48,7 +48,7 @@ const QuickStats: React.FC = () => {
         // Calculate completion rate (last 7 days)
         const weekAgo = new Date();
         weekAgo.setDate(weekAgo.getDate() - 7);
-        const weekAgoStr = weekAgo.toISOString().split('T')[0];
+        const weekAgoStr = weekAgo.toLocaleDateString('en-CA'); // Returns YYYY-MM-DD in local timezone
         
         const weekCheckins = allCheckins.filter((checkin: CheckIn) => 
           checkin.date >= weekAgoStr && checkin.completed
@@ -61,19 +61,20 @@ const QuickStats: React.FC = () => {
           ? Math.round((weekCheckins.length / totalWeekCheckins.length) * 100)
           : 0;
 
-        // Calculate current streak (simplified - consecutive completed days)
+        // Calculate current streak (consecutive days from today backwards)
         let currentStreak = 0;
-        const sortedCheckins = allCheckins
-          .filter((checkin: CheckIn) => checkin.completed)
-          .sort((a: CheckIn, b: CheckIn) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        const completedCheckins = allCheckins.filter((checkin: CheckIn) => checkin.completed);
         
-        if (sortedCheckins.length > 0) {
+        if (completedCheckins.length > 0) {
+          // Create a set of completed dates for faster lookup
+          const completedDates = new Set(completedCheckins.map(checkin => checkin.date));
+          
           let currentDate = new Date(today);
-          for (let i = 0; i < 30; i++) { // Check last 30 days max
-            const dateStr = currentDate.toISOString().split('T')[0];
-            const hasCompleted = sortedCheckins.some((checkin: CheckIn) => checkin.date === dateStr); 
+          // Check consecutive days backwards from today (up to 365 days max)
+          for (let i = 0; i < 365; i++) {
+            const dateStr = currentDate.toLocaleDateString('en-CA'); // Returns YYYY-MM-DD in local timezone
             
-            if (hasCompleted) {
+            if (completedDates.has(dateStr)) {
               currentStreak++;
               currentDate.setDate(currentDate.getDate() - 1);
             } else {

@@ -105,24 +105,30 @@ const HabitAnalytics: React.FC = () => {
       
       {/* Habit Selector */}
       <div className="habit-selector">
-        <label htmlFor="habit-select" className="selector-label">
-          Select Habit:
-        </label>
-        <select
-          id="habit-select"
-          value={selectedHabit?.id || ''}
-          onChange={(e) => {
-            const habit = habits.find(h => h.id === parseInt(e.target.value));
-            if (habit) handleHabitChange(habit);
-          }}
-          className="habit-select"
-        >
-          {habits.map((habit) => (
-            <option key={habit.id} value={habit.id}>
-              {habit.name} ({habit.category})
-            </option>
-          ))}
-        </select>
+        <div className="selector-container">
+          <label htmlFor="habit-select" className="selector-label">
+            <span className="selector-icon">📈</span>
+            Analyze Habit
+          </label>
+          <div className="select-wrapper">
+            <select
+              id="habit-select"
+              value={selectedHabit?.id || ''}
+              onChange={(e) => {
+                const habit = habits.find(h => h.id === parseInt(e.target.value));
+                if (habit) handleHabitChange(habit);
+              }}
+              className="habit-select"
+            >
+              {habits.map((habit) => (
+                <option key={habit.id} value={habit.id}>
+                  {habit.name} • {habit.category} • {habit.frequency}
+                </option>
+              ))}
+            </select>
+            <div className="select-arrow">▼</div>
+          </div>
+        </div>
       </div>
 
       {/* Analytics Content */}

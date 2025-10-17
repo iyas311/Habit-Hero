@@ -9,13 +9,11 @@ import './HabitList.css';
 
 interface HabitListProps {
   onEdit?: (habit: Habit) => void;
-  onCheckIn?: (habitId: number) => void;
   refreshTrigger?: number; // This will help us refresh the list when needed
 }
 
 const HabitList: React.FC<HabitListProps> = ({ 
   onEdit, 
-  onCheckIn, 
   refreshTrigger 
 }) => {
   const [habits, setHabits] = useState<Habit[]>([]);
@@ -113,7 +111,6 @@ const HabitList: React.FC<HabitListProps> = ({
             habit={habit}
             onEdit={onEdit}
             onDelete={handleDelete}
-            onCheckIn={onCheckIn}
           />
         ))}
       </div>

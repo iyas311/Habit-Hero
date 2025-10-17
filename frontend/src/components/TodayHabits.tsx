@@ -21,8 +21,29 @@ const TodayHabits: React.FC<TodayHabitsProps> = ({ onCheckInSuccess }) => {
     habit: Habit | null;
   }>({ isOpen: false, habit: null });
 
-  // Get today's date in YYYY-MM-DD format
-  const today = new Date().toISOString().split('T')[0];
+  // Get today's date in YYYY-MM-DD format (using local timezone)
+  const today = new Date().toLocaleDateString('en-CA'); // Returns YYYY-MM-DD in local timezone
+
+  // Check if a habit should be shown today based on its frequency
+  const shouldShowHabitToday = (habit: Habit): boolean => {
+    if (habit.frequency === 'daily') {
+      return true; // Daily habits always show
+    }
+    
+    if (habit.frequency === 'weekly') {
+      // Weekly habits should only show on the same day of the week as their start date
+      const startDate = new Date(habit.start_date);
+      const todayDate = new Date(today);
+      
+      // Get day of week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+      const startDayOfWeek = startDate.getDay();
+      const todayDayOfWeek = todayDate.getDay();
+      
+      return startDayOfWeek === todayDayOfWeek;
+    }
+    
+    return false; // Unknown frequency
+  };
 
   // Load habits and today's check-ins
   const loadData = useCallback(async () => {
@@ -31,11 +52,14 @@ const TodayHabits: React.FC<TodayHabitsProps> = ({ onCheckInSuccess }) => {
       setError(null);
 
       const habitsData = await getHabits();
-      setHabits(habitsData);
+      
+      // Filter habits to only show those that should appear today
+      const todaysHabits = habitsData.filter(shouldShowHabitToday);
+      setHabits(todaysHabits);
       
       // Get check-ins for each habit and filter for today
       const allCheckins: CheckIn[] = [];
-      for (const habit of habitsData) {
+      for (const habit of todaysHabits) {
         try {
           const habitCheckins = await getHabitCheckins(habit.id, 100); // Get up to 100 check-ins, no offset
           allCheckins.push(...habitCheckins);
@@ -114,7 +138,7 @@ const TodayHabits: React.FC<TodayHabitsProps> = ({ onCheckInSuccess }) => {
         <h3>Today's Habits</h3>
         <div className="empty-container">
           <div className="empty-icon">🎯</div>
-          <p>No habits yet. Create your first habit to get started!</p>
+          <p>No habits scheduled for today. Create habits or check back on their scheduled days!</p>
         </div>
       </div>
     );
@@ -130,7 +154,10 @@ const TodayHabits: React.FC<TodayHabitsProps> = ({ onCheckInSuccess }) => {
             <div key={habit.id} className={`habit-item ${isCompleted ? 'completed' : ''}`}>
               <div className="habit-info">
                 <span className="habit-name">{habit.name}</span>
-                <span className="habit-category">{habit.category}</span>
+                <div className="habit-meta">
+                  <span className="habit-category">{habit.category}</span>
+                  <span className="habit-frequency">{habit.frequency}</span>
+                </div>
               </div>
               <button
                 className={`check-btn ${isCompleted ? 'checked' : 'unchecked'}`}

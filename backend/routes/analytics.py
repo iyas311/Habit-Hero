@@ -25,23 +25,26 @@ def get_habit_streak(habit_id):
             'longest_streak': 0
         })
     
-    # Logic: Calculate current streak (from most recent backwards)
+    # Logic: Calculate current streak (consecutive days from today backwards)
     current_streak = 0
     longest_streak = 0
     
     # Get today's date
     today = datetime.now().date()
     
+    # Create a set of completed dates for faster lookup
+    completed_dates = {checkin.date for checkin in checkins}
+    
     # Start counting from today backwards
     current_date = today
     streak_count = 0
     
-    # Check consecutive days backwards from today
-    for checkin in checkins:
-        if checkin.date == current_date:
+    # Check consecutive days backwards from today (up to 365 days max)
+    for _ in range(365):
+        if current_date in completed_dates:
             streak_count += 1
             current_date -= timedelta(days=1)
-        elif checkin.date < current_date:
+        else:
             # Found a gap, stop counting
             break
     
@@ -65,7 +68,11 @@ def get_habit_streak(habit_id):
                     longest_streak = temp_streak
             elif days_diff > 1:  # Gap in dates
                 temp_streak = 1
+                # Don't update longest_streak here, it's already been tracked above
             last_date = checkin.date
+    
+    # Final check: make sure we didn't miss the last streak
+    longest_streak = max(longest_streak, temp_streak)
     
     return jsonify({
         'habit_id': habit_id,

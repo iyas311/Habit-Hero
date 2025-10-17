@@ -9,14 +9,12 @@ interface HabitCardProps {
   habit: Habit;
   onEdit?: (habit: Habit) => void;
   onDelete?: (habitId: number) => void;
-  onCheckIn?: (habitId: number) => void;
 }
 
 const HabitCard: React.FC<HabitCardProps> = ({ 
   habit, 
   onEdit, 
-  onDelete, 
-  onCheckIn 
+  onDelete 
 }) => {
   // Format the start date for display
   const formatDate = (dateString: string) => {
@@ -72,16 +70,6 @@ const HabitCard: React.FC<HabitCardProps> = ({
 
       {/* Action buttons */}
       <div className="habit-actions">
-        {onCheckIn && (
-          <button 
-            className="btn btn-primary"
-            onClick={() => onCheckIn(habit.id)}
-            title="Check in for today"
-          >
-            ✓ Check In
-          </button>
-        )}
-        
         {onEdit && (
           <button 
             className="btn btn-secondary"

@@ -1,7 +1,7 @@
 // This component shows a calendar view for a selected habit
 // Displays all days from start date with check-in status and notes
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Habit, CheckIn } from '../types';
 import { getHabits, getHabitCheckins, createCheckin, updateCheckin } from '../services/api';
 import './HabitCalendar.css';
@@ -16,7 +16,22 @@ const HabitCalendar: React.FC<HabitCalendarProps> = ({ selectedHabit, onHabitCha
   const [checkins, setCheckins] = useState<CheckIn[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [editingCheckin, setEditingCheckin] = useState<CheckIn | null>(null);
+
+  const loadCheckins = useCallback(async () => {
+    if (!selectedHabit) return;
+
+    try {
+      setLoading(true);
+      setError(null);
+      const checkinsData = await getHabitCheckins(selectedHabit.id, 100);
+      setCheckins(checkinsData);
+    } catch (err) {
+      setError('Failed to load check-ins');
+      console.error('Error loading check-ins:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedHabit]);
 
   // Load habits when component mounts
   useEffect(() => {
@@ -40,23 +55,7 @@ const HabitCalendar: React.FC<HabitCalendarProps> = ({ selectedHabit, onHabitCha
     if (selectedHabit) {
       loadCheckins();
     }
-  }, [selectedHabit]);
-
-  const loadCheckins = async () => {
-    if (!selectedHabit) return;
-
-    try {
-      setLoading(true);
-      setError(null);
-      const checkinsData = await getHabitCheckins(selectedHabit.id, 100);
-      setCheckins(checkinsData);
-    } catch (err) {
-      setError('Failed to load check-ins');
-      console.error('Error loading check-ins:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [selectedHabit, loadCheckins]);
 
   // Generate all dates from habit start date to today
   const generateDateRange = () => {
@@ -73,9 +72,29 @@ const HabitCalendar: React.FC<HabitCalendarProps> = ({ selectedHabit, onHabitCha
     return dates.reverse(); // Most recent first
   };
 
+  // Check if a date is relevant for a weekly habit
+  const isDateRelevantForHabit = (date: Date): boolean => {
+    if (!selectedHabit) return false;
+    
+    if (selectedHabit.frequency === 'daily') {
+      return true; // All dates are relevant for daily habits
+    }
+    
+    if (selectedHabit.frequency === 'weekly') {
+      // For weekly habits, only show dates that match the start date's day of week
+      const startDate = new Date(selectedHabit.start_date);
+      const startDayOfWeek = startDate.getDay();
+      const dateDayOfWeek = date.getDay();
+      
+      return startDayOfWeek === dateDayOfWeek;
+    }
+    
+    return false;
+  };
+
   // Get check-in for a specific date
   const getCheckinForDate = (date: Date): CheckIn | null => {
-    const dateStr = date.toISOString().split('T')[0];
+    const dateStr = date.toLocaleDateString('en-CA'); // Returns YYYY-MM-DD in local timezone
     return checkins.find(checkin => checkin.date === dateStr) || null;
   };
 
@@ -83,7 +102,7 @@ const HabitCalendar: React.FC<HabitCalendarProps> = ({ selectedHabit, onHabitCha
   const handleCheckinChange = async (date: Date, completed: boolean, notes: string = '') => {
     if (!selectedHabit) return;
 
-    const dateStr = date.toISOString().split('T')[0];
+    const dateStr = date.toLocaleDateString('en-CA'); // Returns YYYY-MM-DD in local timezone
     const existingCheckin = getCheckinForDate(date);
 
     try {
@@ -156,19 +175,27 @@ const HabitCalendar: React.FC<HabitCalendarProps> = ({ selectedHabit, onHabitCha
       <div className="calendar-header">
         <h3>Habit Calendar</h3>
         <div className="habit-selector">
-          <label htmlFor="habit-select">Select Habit:</label>
-          <select
-            id="habit-select"
-            value={selectedHabit?.id || ''}
-            onChange={(e) => handleHabitChange(e.target.value)}
-            className="habit-select"
-          >
-            {habits.map((habit) => (
-              <option key={habit.id} value={habit.id}>
-                {habit.name} ({habit.category})
-              </option>
-            ))}
-          </select>
+          <div className="selector-container">
+            <label htmlFor="habit-select" className="selector-label">
+              <span className="selector-icon">📅</span>
+              Select Habit:
+            </label>
+            <div className="select-wrapper">
+              <select
+                id="habit-select"
+                value={selectedHabit?.id || ''}
+                onChange={(e) => handleHabitChange(e.target.value)}
+                className="habit-select"
+              >
+                {habits.map((habit) => (
+                  <option key={habit.id} value={habit.id}>
+                    {habit.name} • {habit.category} • {habit.frequency}
+                  </option>
+                ))}
+              </select>
+              <div className="select-arrow">▼</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -191,11 +218,12 @@ const HabitCalendar: React.FC<HabitCalendarProps> = ({ selectedHabit, onHabitCha
               const checkin = getCheckinForDate(date);
               const isToday = date.toDateString() === new Date().toDateString();
               const isFuture = date > new Date();
+              const isRelevant = isDateRelevantForHabit(date);
 
               return (
                 <div
-                  key={date.toISOString()}
-                  className={`calendar-day ${isToday ? 'today' : ''} ${isFuture ? 'future' : ''} ${checkin?.completed ? 'completed' : checkin ? 'missed' : ''}`}
+                  key={date.toLocaleDateString('en-CA')}
+                  className={`calendar-day ${isToday ? 'today' : ''} ${isFuture ? 'future' : ''} ${!isRelevant ? 'not-relevant' : ''} ${checkin?.completed ? 'completed' : checkin ? 'missed' : ''}`}
                 >
                   <div className="day-header">
                     <span className="day-number">{date.getDate()}</span>
@@ -206,6 +234,10 @@ const HabitCalendar: React.FC<HabitCalendarProps> = ({ selectedHabit, onHabitCha
                     {isFuture ? (
                       <div className="future-day">
                         <span className="future-text">Future</span>
+                      </div>
+                    ) : !isRelevant ? (
+                      <div className="not-relevant-day">
+                        <span className="not-relevant-text">N/A</span>
                       </div>
                     ) : (
                       <div className="checkin-controls">

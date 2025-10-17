@@ -108,7 +108,7 @@ const AddHabitForm: React.FC<AddHabitFormProps> = ({ isOpen, onClose, onSuccess 
         description: formData.description.trim(),
         frequency: formData.frequency,
         category: formData.category,
-        start_date: new Date().toISOString().split('T')[0] // Today's date
+        start_date: new Date().toLocaleDateString('en-CA') // Today's date in local timezone
       };
 
       await createHabit(habitData);
