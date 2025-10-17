@@ -19,22 +19,40 @@ const AISuggestions: React.FC<AISuggestionsProps> = ({ onHabitCreated, onClose }
   const [creatingHabits, setCreatingHabits] = useState<Set<number>>(new Set());
   const [userGoals, setUserGoals] = useState<string>('');
   const [showGoalsInput, setShowGoalsInput] = useState<boolean>(false);
+  const [hasLoaded, setHasLoaded] = useState<boolean>(false);
 
-  // Load initial suggestions
-  useEffect(() => {
-    loadSuggestions();
-  }, []);
+  // Don't auto-load on mount - wait for user action
+  // useEffect(() => {
+  //   loadSuggestions();
+  // }, []);
 
   const loadSuggestions = async (goals?: string) => {
     try {
       setLoading(true);
       setError(null);
+      setHasLoaded(true);
       
       const response = await getAISuggestions(goals);
-      setSuggestions(response.suggestions);
-    } catch (err) {
-      setError('Failed to load AI suggestions. Please try again.');
+      
+      // Check if response has suggestions
+      if (response && response.suggestions && response.suggestions.length > 0) {
+        setSuggestions(response.suggestions);
+      } else {
+        setError('No suggestions available. Try adding your goals or refreshing.');
+      }
+    } catch (err: any) {
       console.error('Error loading AI suggestions:', err);
+      
+      // More specific error messages
+      if (err.response?.status === 503) {
+        setError('AI service is temporarily unavailable. Please try again in a moment.');
+      } else if (err.response?.status === 500) {
+        setError('Server error. Please check if the backend is running.');
+      } else if (err.code === 'ERR_NETWORK') {
+        setError('Cannot connect to server. Please ensure the backend is running on port 5000.');
+      } else {
+        setError('Failed to load AI suggestions. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -198,7 +216,22 @@ const AISuggestions: React.FC<AISuggestionsProps> = ({ onHabitCreated, onClose }
         </div>
       )}
 
-      {suggestions.length === 0 && !loading && !error && (
+      {suggestions.length === 0 && !loading && !error && !hasLoaded && (
+        <div className="empty-container">
+          <div className="empty-icon">🤖</div>
+          <h3>Get AI-Powered Habit Suggestions</h3>
+          <p>Click the button below to get personalized habit recommendations based on your existing habits!</p>
+          <button 
+            className="btn btn-primary"
+            onClick={() => loadSuggestions()}
+            style={{ marginTop: '1rem', fontSize: '1.1rem', padding: '0.75rem 2rem' }}
+          >
+            ✨ Generate Suggestions
+          </button>
+        </div>
+      )}
+      
+      {suggestions.length === 0 && !loading && !error && hasLoaded && (
         <div className="empty-container">
           <div className="empty-icon">🤖</div>
           <p>No suggestions available right now. Try refreshing or adding your goals!</p>

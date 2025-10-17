@@ -143,30 +143,6 @@ const HabitAnalytics: React.FC = () => {
             )}
           </div>
 
-          {/* Statistics */}
-          {habitStats && (
-            <div className="stats-section">
-              <h5>Statistics</h5>
-              <div className="stats-grid">
-                <div className="stat-item">
-                  <span className="stat-label">Days Since Start</span>
-                  <span className="stat-value">{habitStats.days_since_start}</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-label">Total Check-ins</span>
-                  <span className="stat-value">{habitStats.total_checkins}</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-label">Completed</span>
-                  <span className="stat-value">{habitStats.total_completed}</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-label">Success Rate</span>
-                  <span className="stat-value">{habitStats.success_rate}%</span>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Streak Information */}
           {habitStreak && (

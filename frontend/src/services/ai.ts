@@ -59,7 +59,10 @@ export const getAISuggestions = async (
       exclude_categories: excludeCategories || []
     };
 
-    const response = await api.post<AISuggestionsResponse>('/ai/suggestions', requestData);
+    // AI requests may take longer due to retry logic, so increase timeout
+    const response = await api.post<AISuggestionsResponse>('/ai/suggestions', requestData, {
+      timeout: 30000  // 30 seconds timeout for AI requests
+    });
     return response.data;
   } catch (error) {
     console.error('Error getting AI suggestions:', error);

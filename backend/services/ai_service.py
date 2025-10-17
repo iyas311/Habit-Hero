@@ -4,11 +4,13 @@ Provides intelligent habit recommendations based on user's existing habits and g
 """
 
 import os
+import time
 from google import genai
 from google.genai import types
 from typing import List, Dict, Any
 import json
 import logging
+import httpx
 
 class AIService:
     def __init__(self):
@@ -25,6 +27,8 @@ class AIService:
         try:
             self.client = genai.Client(api_key=api_key)
             self.model_name = 'gemini-2.5-flash'
+            self.max_retries = 3
+            self.retry_delay = 2  # seconds
             self.logger.info(f"AI service initialized successfully with {self.model_name}")
         except Exception as e:
             self.logger.error(f"Failed to initialize Gemini client: {str(e)}")
@@ -48,11 +52,8 @@ class AIService:
             # Create the prompt for Gemini
             prompt = self._create_suggestion_prompt(habits_context, user_goals)
             
-            # Generate response from Gemini using new client API
-            response = self.client.models.generate_content(
-                model=self.model_name,
-                contents=prompt
-            )
+            # Generate response from Gemini with retry logic
+            response = self._generate_with_retry(prompt)
             
             # Parse and return suggestions
             suggestions = self._parse_ai_response(response.text)
@@ -63,6 +64,72 @@ class AIService:
         except Exception as e:
             self.logger.error(f"Error generating habit suggestions: {str(e)}")
             return self._get_fallback_suggestions()
+    
+    def _generate_with_retry(self, prompt: str, retries: int = None, delay: int = None):
+        """
+        Generate content with retry logic for handling API failures
+        
+        Args:
+            prompt: The prompt to send to Gemini
+            retries: Number of retry attempts (default: self.max_retries)
+            delay: Delay between retries in seconds (default: self.retry_delay)
+            
+        Returns:
+            Response from Gemini API
+            
+        Raises:
+            Exception: If all retries fail
+        """
+        retries = retries or self.max_retries
+        delay = delay or self.retry_delay
+        
+        for attempt in range(retries):
+            try:
+                self.logger.info(f"AI request attempt {attempt + 1}/{retries}")
+                
+                response = self.client.models.generate_content(
+                    model=self.model_name,
+                    contents=prompt
+                )
+                
+                self.logger.info(f"AI request successful on attempt {attempt + 1}")
+                return response
+                
+            except httpx.HTTPStatusError as e:
+                # Handle 503 Service Unavailable and other HTTP errors
+                if e.response.status_code == 503:
+                    self.logger.warning(f"Service unavailable (503) on attempt {attempt + 1}/{retries}")
+                elif e.response.status_code == 429:
+                    self.logger.warning(f"Rate limit exceeded (429) on attempt {attempt + 1}/{retries}")
+                else:
+                    self.logger.error(f"HTTP error {e.response.status_code} on attempt {attempt + 1}/{retries}")
+                
+                # Retry if not the last attempt
+                if attempt < retries - 1:
+                    wait_time = delay * (2 ** attempt)  # Exponential backoff
+                    self.logger.info(f"Retrying in {wait_time} seconds...")
+                    time.sleep(wait_time)
+                    continue
+                else:
+                    self.logger.error(f"All {retries} attempts failed")
+                    raise e
+                    
+            except httpx.TimeoutException as e:
+                self.logger.warning(f"Request timeout on attempt {attempt + 1}/{retries}")
+                
+                if attempt < retries - 1:
+                    wait_time = delay * (2 ** attempt)
+                    self.logger.info(f"Retrying in {wait_time} seconds...")
+                    time.sleep(wait_time)
+                    continue
+                else:
+                    self.logger.error(f"All {retries} attempts failed due to timeout")
+                    raise e
+                    
+            except Exception as e:
+                # For other exceptions, log and raise immediately
+                self.logger.error(f"Unexpected error on attempt {attempt + 1}: {str(e)}")
+                raise e
     
     def _prepare_habits_context(self, habits: List[Dict[str, Any]]) -> str:
         """Prepare context string from existing habits"""
@@ -211,10 +278,8 @@ Format as JSON:
 }}
 """
             
-            response = self.client.models.generate_content(
-                model=self.model_name,
-                contents=prompt
-            )
+            # Use retry logic for analysis as well
+            response = self._generate_with_retry(prompt)
             return self._parse_analysis_response(response.text)
             
         except Exception as e:

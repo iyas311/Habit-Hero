@@ -226,10 +226,8 @@ def get_ai_categories():
         Return only the category names, one per line, without numbers or bullets.
         """
         
-        response = ai_service.client.models.generate_content(
-            model=ai_service.model_name,
-            contents=prompt
-        )
+        # Use retry logic for category generation
+        response = ai_service._generate_with_retry(prompt)
         categories = [cat.strip() for cat in response.text.split('\n') if cat.strip()]
         
         # Clean up and filter categories
