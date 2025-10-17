@@ -11,12 +11,12 @@ const HabitsPage: React.FC = () => {
   const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
   const [isAddFormOpen, setIsAddFormOpen] = useState<boolean>(false);
   const [showAISuggestions, setShowAISuggestions] = useState<boolean>(false);
+  const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
 
-  // Function to handle habit editing (placeholder for now)
+  // Function to handle habit editing
   const handleEdit = (habit: Habit) => {
-    console.log('Edit habit:', habit);
-    // TODO: Open edit modal or navigate to edit page
-    alert(`Edit functionality coming soon for: ${habit.name}`);
+    setEditingHabit(habit);
+    setIsAddFormOpen(true);
   };
 
 
@@ -78,11 +78,15 @@ const HabitsPage: React.FC = () => {
         refreshTrigger={refreshTrigger}
       />
 
-      {/* Add Habit Modal */}
+      {/* Add/Edit Habit Modal */}
       <AddHabitForm
         isOpen={isAddFormOpen}
-        onClose={() => setIsAddFormOpen(false)}
+        onClose={() => {
+          setIsAddFormOpen(false);
+          setEditingHabit(null);
+        }}
         onSuccess={handleHabitCreated}
+        editingHabit={editingHabit}
       />
 
     </div>

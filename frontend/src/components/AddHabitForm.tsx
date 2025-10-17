@@ -1,19 +1,20 @@
-// This component creates a beautiful modal form for adding new habits
+// This component creates a beautiful modal form for adding/editing habits
 // Includes form validation, categories dropdown, and backend integration
 
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Category } from '../types';
-import { createHabit, getCategories } from '../services/api';
+import { Category, Habit } from '../types';
+import { createHabit, updateHabit, getCategories } from '../services/api';
 import './AddHabitForm.css';
 
 interface AddHabitFormProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void; // Called when habit is successfully created
+  onSuccess: () => void; // Called when habit is successfully created/updated
+  editingHabit?: Habit | null; // If provided, form is in edit mode
 }
 
-const AddHabitForm: React.FC<AddHabitFormProps> = ({ isOpen, onClose, onSuccess }) => {
+const AddHabitForm: React.FC<AddHabitFormProps> = ({ isOpen, onClose, onSuccess, editingHabit }) => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -23,6 +24,8 @@ const AddHabitForm: React.FC<AddHabitFormProps> = ({ isOpen, onClose, onSuccess 
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const isEditMode = !!editingHabit;
 
   // Load categories when component mounts
   useEffect(() => {
@@ -40,18 +43,29 @@ const AddHabitForm: React.FC<AddHabitFormProps> = ({ isOpen, onClose, onSuccess 
     }
   }, [isOpen]);
 
-  // Reset form when modal opens/closes
+  // Populate form when editing or reset when adding
   useEffect(() => {
     if (isOpen) {
-      setFormData({
-        name: '',
-        description: '',
-        frequency: 'daily',
-        category: ''
-      });
+      if (editingHabit) {
+        // Edit mode: populate with existing data
+        setFormData({
+          name: editingHabit.name,
+          description: editingHabit.description || '',
+          frequency: editingHabit.frequency,
+          category: editingHabit.category || ''
+        });
+      } else {
+        // Add mode: reset form
+        setFormData({
+          name: '',
+          description: '',
+          frequency: 'daily',
+          category: ''
+        });
+      }
       setErrors({});
     }
-  }, [isOpen]);
+  }, [isOpen, editingHabit]);
 
   // Handle form input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -108,18 +122,24 @@ const AddHabitForm: React.FC<AddHabitFormProps> = ({ isOpen, onClose, onSuccess 
         description: formData.description.trim(),
         frequency: formData.frequency,
         category: formData.category,
-        start_date: new Date().toLocaleDateString('en-CA') // Today's date in local timezone
+        ...(isEditMode ? {} : { start_date: new Date().toLocaleDateString('en-CA') }) // Only set start_date for new habits
       };
 
-      await createHabit(habitData);
+      if (isEditMode && editingHabit) {
+        // Update existing habit
+        await updateHabit(editingHabit.id, habitData);
+      } else {
+        // Create new habit
+        await createHabit(habitData);
+      }
       
       // Success! Close modal and refresh the list
       onSuccess();
       onClose();
       
     } catch (error) {
-      console.error('Error creating habit:', error);
-      setErrors({ submit: 'Failed to create habit. Please try again.' });
+      console.error(`Error ${isEditMode ? 'updating' : 'creating'} habit:`, error);
+      setErrors({ submit: `Failed to ${isEditMode ? 'update' : 'create'} habit. Please try again.` });
     } finally {
       setLoading(false);
     }
@@ -146,7 +166,7 @@ const AddHabitForm: React.FC<AddHabitFormProps> = ({ isOpen, onClose, onSuccess 
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         {/* Modal Header */}
         <div className="modal-header">
-          <h2>Add New Habit</h2>
+          <h2>{isEditMode ? 'Edit Habit' : 'Add New Habit'}</h2>
           <button 
             className="close-button"
             onClick={handleClose}
@@ -261,10 +281,10 @@ const AddHabitForm: React.FC<AddHabitFormProps> = ({ isOpen, onClose, onSuccess 
               {loading ? (
                 <>
                   <span className="loading-spinner-small"></span>
-                  Creating...
+                  {isEditMode ? 'Updating...' : 'Creating...'}
                 </>
               ) : (
-                'Create Habit'
+                isEditMode ? 'Update Habit' : 'Create Habit'
               )}
             </button>
           </div>
