@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import HabitsPage from './pages/HabitsPage';
+import CalendarPage from './pages/CalendarPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import CategoriesPage from './pages/CategoriesPage';
 import './App.css';
@@ -17,6 +18,9 @@ function App() {
           
           {/* Habits management page */}
           <Route path="/habits" element={<HabitsPage />} />
+          
+          {/* Calendar page */}
+          <Route path="/calendar" element={<CalendarPage />} />
           
           {/* Analytics page */}
           <Route path="/analytics" element={<AnalyticsPage />} />

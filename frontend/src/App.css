@@ -272,3 +272,71 @@ body {
     font-size: 0.9rem;
   }
 }
+
+/* Dashboard specific styles */
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.dashboard-header h1 {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-header p {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+
+.dashboard-footer {
+  margin-top: 2rem;
+}
+
+.motivational-quote {
+  background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+  border-radius: 16px;
+  padding: 1.5rem;
+  text-align: center;
+  border: 1px solid rgba(102, 126, 234, 0.1);
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.05);
+}
+
+.motivational-quote p {
+  font-size: 1.1rem;
+  font-style: italic;
+  color: #2c3e50;
+  margin: 0 0 0.5rem 0;
+  font-weight: 500;
+}
+
+.motivational-quote span {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+
+@media (max-width: 768px) {
+  .dashboard-header h1 {
+    font-size: 2rem;
+  }
+
+  .dashboard-header p {
+    font-size: 1rem;
+  }
+
+  .motivational-quote {
+    padding: 1rem;
+  }
+
+  .motivational-quote p {
+    font-size: 1rem;
+  }
+}

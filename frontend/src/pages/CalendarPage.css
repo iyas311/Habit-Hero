@@ -1,0 +1,59 @@
+/* Styles for Calendar page */
+
+.calendar-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.calendar-page .page-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+}
+
+.calendar-page .page-header h1 {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.calendar-page .page-header p {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+  margin: 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.5;
+}
+
+/* Responsive adjustments for calendar page */
+@media (max-width: 768px) {
+  .calendar-page .page-header h1 {
+    font-size: 2rem;
+  }
+  
+  .calendar-page .page-header p {
+    font-size: 1rem;
+    padding: 0 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar-page .page-header {
+    margin-bottom: 1.5rem;
+  }
+  
+  .calendar-page .page-header h1 {
+    font-size: 1.75rem;
+  }
+  
+  .calendar-page .page-header p {
+    font-size: 0.9rem;
+  }
+}

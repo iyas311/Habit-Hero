@@ -25,36 +25,47 @@ def get_habit_streak(habit_id):
             'longest_streak': 0
         })
     
-    # Logic: Calculate current streak
+    # Logic: Calculate current streak (from most recent backwards)
     current_streak = 0
     longest_streak = 0
+    
+    # Get today's date
+    today = datetime.now().date()
+    
+    # Start counting from today backwards
+    current_date = today
+    streak_count = 0
+    
+    # Check consecutive days backwards from today
+    for checkin in checkins:
+        if checkin.date == current_date:
+            streak_count += 1
+            current_date -= timedelta(days=1)
+        elif checkin.date < current_date:
+            # Found a gap, stop counting
+            break
+    
+    current_streak = streak_count
+    
+    # Logic: Calculate longest streak
     temp_streak = 0
+    longest_streak = 0
     last_date = None
     
     for checkin in checkins:
         if last_date is None:
             last_date = checkin.date
-            current_streak = 1
             temp_streak = 1
             longest_streak = 1
         else:
-            # Logic: Check if dates are consecutive (difference of 1 day)
             days_diff = (last_date - checkin.date).days
-            
             if days_diff == 1:  # Consecutive day
                 temp_streak += 1
                 if temp_streak > longest_streak:
                     longest_streak = temp_streak
-                
-                # Logic: Only count current streak if we're still in it
-                if current_streak == temp_streak - 1:
-                    current_streak = temp_streak
             elif days_diff > 1:  # Gap in dates
-                if current_streak == temp_streak:  # We were in current streak
-                    current_streak = 0  # Streak broken
                 temp_streak = 1
-                last_date = checkin.date
-            # If days_diff == 0, it's the same date, skip
+            last_date = checkin.date
     
     return jsonify({
         'habit_id': habit_id,

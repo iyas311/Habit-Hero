@@ -14,8 +14,6 @@ import {
   CreateCheckInData,
   UpdateHabitData,
   UpdateCheckInData,
-  ApiResponse,
-  PaginatedResponse
 } from '../types';
 
 // ========================================
@@ -24,7 +22,7 @@ import {
 
 // Create axios instance with base configuration
 const api = axios.create({
-  baseURL: 'http://localhost:5000',  // Our Flask backend URL
+  baseURL: 'http://127.0.0.1:5000',  // Our Flask backend URL
   timeout: 10000,  // 10 seconds timeout
   headers: {
     'Content-Type': 'application/json',

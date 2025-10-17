@@ -1,0 +1,238 @@
+/* Styles for today's habits component */
+
+.today-habits {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.1);
+  border: 1px solid rgba(102, 126, 234, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.today-habits h3 {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+}
+
+/* Habits list */
+.habits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.habit-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f8f9ff;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.habit-item:hover {
+  background: #f0f4ff;
+  border-color: rgba(102, 126, 234, 0.2);
+  transform: translateY(-1px);
+}
+
+.habit-item.completed {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  border-color: #27ae60;
+}
+
+.habit-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.habit-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.habit-item.completed .habit-name {
+  color: #155724;
+  text-decoration: line-through;
+  opacity: 0.8;
+}
+
+.habit-category {
+  font-size: 0.8rem;
+  color: #7f8c8d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.habit-item.completed .habit-category {
+  color: #6c757d;
+}
+
+/* Check button */
+.check-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #e9ecef;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  color: #6c757d;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1;
+}
+
+.check-btn.unchecked {
+  color: #e74c3c;
+  border-color: #e74c3c;
+  background: #fdf2f2;
+}
+
+.check-btn.unchecked:hover {
+  border-color: #c0392b;
+  color: #c0392b;
+  background: #fadbd8;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.check-btn.checked {
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+  border-color: #27ae60;
+  color: white;
+  box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+}
+
+.check-btn.checked:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+}
+
+/* Loading and error states */
+.loading-container,
+.error-container,
+.empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.loading-container {
+  background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+  border-radius: 12px;
+}
+
+.loading-spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(102, 126, 234, 0.1);
+  border-top: 3px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 0.5rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-container p {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.error-container {
+  background: linear-gradient(135deg, #fdf2f2 0%, #fef5f5 100%);
+  border: 1px solid rgba(231, 76, 60, 0.2);
+  border-radius: 12px;
+}
+
+.error-container p {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.empty-container {
+  background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+  border: 2px dashed rgba(102, 126, 234, 0.3);
+  border-radius: 12px;
+}
+
+.empty-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.6;
+}
+
+.empty-container p {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .today-habits {
+    padding: 1rem;
+  }
+
+  .habit-item {
+    padding: 0.75rem;
+  }
+
+  .habit-name {
+    font-size: 0.9rem;
+  }
+
+  .habit-category {
+    font-size: 0.75rem;
+  }
+
+  .check-btn {
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .today-habits {
+    padding: 0.75rem;
+  }
+
+  .habit-item {
+    padding: 0.5rem;
+  }
+
+  .habit-info {
+    gap: 0.125rem;
+  }
+
+  .check-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+  }
+}

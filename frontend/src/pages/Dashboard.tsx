@@ -1,24 +1,39 @@
 // This is the main dashboard page that users see when they first visit the app
-// For now, it's a simple placeholder - we'll add content later
+// Now shows real data: today's habits, quick stats, and progress overview
 
-import React from 'react';
+import React, { useState } from 'react';
+import TodayHabits from '../components/TodayHabits';
+import QuickStats from '../components/QuickStats';
 
 const Dashboard: React.FC = () => {
+  const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
+
+  const handleCheckInSuccess = () => {
+    setRefreshTrigger(prev => prev + 1);
+  };
+
   return (
     <div className="dashboard">
-      <h1>Dashboard</h1>
-      <p>Welcome to Habit Hero! This is your dashboard.</p>
-      <p>Here you'll see an overview of your habits and progress.</p>
+      <div className="dashboard-header">
+        <h1>Dashboard</h1>
+        <p>Welcome back! Here's your progress overview.</p>
+      </div>
       
-      {/* Placeholder content - we'll replace this later */}
-      <div className="dashboard-placeholder">
-        <h2>Coming Soon:</h2>
-        <ul>
-          <li>Today's habits to check off</li>
-          <li>Current streaks</li>
-          <li>Recent activity</li>
-          <li>Quick statistics</li>
-        </ul>
+      {/* Quick Statistics */}
+      <QuickStats key={`stats-${refreshTrigger}`} />
+      
+      {/* Today's Habits */}
+      <TodayHabits 
+        key={`habits-${refreshTrigger}`} 
+        onCheckInSuccess={handleCheckInSuccess}
+      />
+      
+      {/* Additional sections can be added here */}
+      <div className="dashboard-footer">
+        <div className="motivational-quote">
+          <p>"The secret of getting ahead is getting started."</p>
+          <span>- Mark Twain</span>
+        </div>
       </div>
     </div>
   );

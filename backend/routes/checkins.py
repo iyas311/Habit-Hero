@@ -12,6 +12,10 @@ def create_checkin(habit_id):
     habit = Habit.query.get_or_404(habit_id)
     data = request.get_json() or {}
     
+    # Debug logging
+    print(f"Creating check-in for habit {habit_id}")
+    print(f"Received data: {data}")
+    
     # Logic: Use provided date or default to today
     checkin_date_str = data.get('date', datetime.now().strftime('%Y-%m-%d'))
     
@@ -25,7 +29,11 @@ def create_checkin(habit_id):
         ).first()
         
         if existing_checkin:
-            return jsonify({"error": "Check-in already exists for this date"}), 400
+            # Update existing check-in instead of creating a new one
+            existing_checkin.notes = data.get('notes', existing_checkin.notes)
+            existing_checkin.completed = data.get('completed', existing_checkin.completed)
+            db.session.commit()
+            return jsonify(existing_checkin.to_dict()), 200
         
         # Logic: Create new check-in with optional notes
         checkin = CheckIn(

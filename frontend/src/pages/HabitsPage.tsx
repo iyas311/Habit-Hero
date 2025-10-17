@@ -5,10 +5,15 @@ import React, { useState } from 'react';
 import { Habit } from '../types';
 import HabitList from '../components/HabitList';
 import AddHabitForm from '../components/AddHabitForm';
+import CheckInModal from '../components/CheckInModal';
 
 const HabitsPage: React.FC = () => {
   const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
   const [isAddFormOpen, setIsAddFormOpen] = useState<boolean>(false);
+  const [checkInModal, setCheckInModal] = useState<{
+    isOpen: boolean;
+    habit: Habit | null;
+  }>({ isOpen: false, habit: null });
 
   // Function to handle habit editing (placeholder for now)
   const handleEdit = (habit: Habit) => {
@@ -17,11 +22,14 @@ const HabitsPage: React.FC = () => {
     alert(`Edit functionality coming soon for: ${habit.name}`);
   };
 
-  // Function to handle check-ins (placeholder for now)
+  // Function to handle check-ins - open modal
   const handleCheckIn = (habitId: number) => {
+    // Find the habit by ID
+    // Note: In a real app, you might want to pass the habit object directly
+    // For now, we'll need to get it from the HabitList component
     console.log('Check in for habit:', habitId);
-    // TODO: Open check-in modal
-    alert(`Check-in functionality coming soon for habit ID: ${habitId}`);
+    // TODO: Get habit object and open modal
+    // This will be handled by the HabitList component
   };
 
   // Function to trigger list refresh (for when we add new habits)
@@ -34,6 +42,12 @@ const HabitsPage: React.FC = () => {
     refreshList(); // Refresh the habits list
     // Optional: Show success message
     console.log('New habit created successfully!');
+  };
+
+  // Function to handle successful check-in
+  const handleCheckInSuccess = () => {
+    refreshList(); // Refresh the habits list
+    console.log('Check-in completed successfully!');
   };
 
   return (
@@ -63,6 +77,14 @@ const HabitsPage: React.FC = () => {
         isOpen={isAddFormOpen}
         onClose={() => setIsAddFormOpen(false)}
         onSuccess={handleHabitCreated}
+      />
+
+      {/* Check-in Modal */}
+      <CheckInModal
+        isOpen={checkInModal.isOpen}
+        onClose={() => setCheckInModal({ isOpen: false, habit: null })}
+        habit={checkInModal.habit}
+        onSuccess={handleCheckInSuccess}
       />
     </div>
   );

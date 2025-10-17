@@ -17,6 +17,7 @@ const Sidebar: React.FC = () => {
   const navItems = [
     { path: '/', label: 'Dashboard', icon: '📊' },
     { path: '/habits', label: 'Habits', icon: '🎯' },
+    { path: '/calendar', label: 'Calendar', icon: '📅' },
     { path: '/analytics', label: 'Analytics', icon: '📈' },
     { path: '/categories', label: 'Categories', icon: '🏷️' }
   ];
