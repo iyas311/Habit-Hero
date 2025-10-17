@@ -27,14 +27,6 @@ const Dashboard: React.FC = () => {
         key={`habits-${refreshTrigger}`} 
         onCheckInSuccess={handleCheckInSuccess}
       />
-      
-      {/* Additional sections can be added here */}
-      <div className="dashboard-footer">
-        <div className="motivational-quote">
-          <p>"The secret of getting ahead is getting started."</p>
-          <span>- Mark Twain</span>
-        </div>
-      </div>
     </div>
   );
 };
