@@ -5,10 +5,12 @@ import React, { useState } from 'react';
 import { Habit } from '../types';
 import HabitList from '../components/HabitList';
 import AddHabitForm from '../components/AddHabitForm';
+import AISuggestions from '../components/AISuggestions';
 
 const HabitsPage: React.FC = () => {
   const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
   const [isAddFormOpen, setIsAddFormOpen] = useState<boolean>(false);
+  const [showAISuggestions, setShowAISuggestions] = useState<boolean>(false);
 
   // Function to handle habit editing (placeholder for now)
   const handleEdit = (habit: Habit) => {
@@ -30,6 +32,12 @@ const HabitsPage: React.FC = () => {
     console.log('New habit created successfully!');
   };
 
+  // Function to handle AI suggestion habit creation
+  const handleAISuggestionCreated = () => {
+    refreshList(); // Refresh the habits list
+    console.log('Habit created from AI suggestion!');
+  };
+
 
   return (
     <div className="habits-page">
@@ -39,14 +47,30 @@ const HabitsPage: React.FC = () => {
           <p>Manage your habits and track your progress.</p>
         </div>
         
-        {/* Add habit button - now opens the modal */}
-        <button 
-          className="btn btn-primary add-habit-btn"
-          onClick={() => setIsAddFormOpen(true)}
-        >
-          ➕ Add New Habit
-        </button>
+        {/* Action buttons */}
+        <div className="header-actions">
+          <button 
+            className="btn btn-secondary"
+            onClick={() => setShowAISuggestions(!showAISuggestions)}
+          >
+            🤖 AI Suggestions
+          </button>
+          <button 
+            className="btn btn-primary add-habit-btn"
+            onClick={() => setIsAddFormOpen(true)}
+          >
+            ➕ Add New Habit
+          </button>
+        </div>
       </div>
+
+      {/* AI Suggestions */}
+      {showAISuggestions && (
+        <AISuggestions
+          onHabitCreated={handleAISuggestionCreated}
+          onClose={() => setShowAISuggestions(false)}
+        />
+      )}
       
       {/* Real habits list from backend */}
       <HabitList 
