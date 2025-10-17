@@ -22,12 +22,14 @@ def create_app(config_name='default'):
     from routes.checkins import checkins_bp
     from routes.analytics import analytics_bp
     from routes.categories import categories_bp
+    from routes.reports import reports_bp
     
     # Register blueprints
     app.register_blueprint(habits_bp)
     app.register_blueprint(checkins_bp)
     app.register_blueprint(analytics_bp)
     app.register_blueprint(categories_bp)
+    app.register_blueprint(reports_bp)
     
     # Create database tables
     with app.app_context():

@@ -16,8 +16,10 @@ const CalendarPage: React.FC = () => {
   return (
     <div className="calendar-page">
       <div className="page-header">
-        <h1>Habit Calendar</h1>
-        <p>Track your daily progress with a visual calendar view. Select a habit to see all days from start date to today.</p>
+        <div className="header-content">
+          <h1>Habit Calendar</h1>
+          <p>Track your daily progress with a visual calendar view. Select a habit to see all days from start date to today.</p>
+        </div>
       </div>
       
       {/* Habit Calendar Component */}

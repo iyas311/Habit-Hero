@@ -34,8 +34,10 @@ const HabitsPage: React.FC = () => {
   return (
     <div className="habits-page">
       <div className="page-header">
-        <h1>My Habits</h1>
-        <p>Manage your habits and track your progress.</p>
+        <div className="header-content">
+          <h1>My Habits</h1>
+          <p>Manage your habits and track your progress.</p>
+        </div>
         
         {/* Add habit button - now opens the modal */}
         <button 

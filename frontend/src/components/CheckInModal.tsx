@@ -50,7 +50,7 @@ const CheckInModal: React.FC<CheckInModalProps> = ({
         notes: notes.trim()
       };
 
-      const result = await createCheckin(habit.id, checkinData);
+        await createCheckin(habit.id, checkinData);
       
       // Success! Close modal and refresh data
       onSuccess();

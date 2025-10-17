@@ -3,7 +3,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { Habit, CheckIn } from '../types';
-import { getHabits, getHabitCheckins, getOverallAnalytics } from '../services/api';
+import { getHabits, getHabitCheckins } from '../services/api';
+import { generatePDFReport } from '../services/reports';
 import './AnalyticsOverview.css';
 
 const AnalyticsOverview: React.FC = () => {
@@ -18,6 +19,7 @@ const AnalyticsOverview: React.FC = () => {
   });
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [isGeneratingReport, setIsGeneratingReport] = useState<boolean>(false);
 
   useEffect(() => {
     const loadAnalytics = async () => {
@@ -117,6 +119,19 @@ const AnalyticsOverview: React.FC = () => {
     loadAnalytics();
   }, []);
 
+  // Handle direct PDF download
+  const handleDownloadReport = async () => {
+    try {
+      setIsGeneratingReport(true);
+      await generatePDFReport();
+    } catch (error) {
+      console.error('Error generating report:', error);
+      setError('Failed to generate report. Please try again.');
+    } finally {
+      setIsGeneratingReport(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="analytics-overview">
@@ -181,7 +196,18 @@ const AnalyticsOverview: React.FC = () => {
 
   return (
     <div className="analytics-overview">
-      <h3>Analytics Overview</h3>
+      <div className="analytics-header">
+        <h3>Analytics Overview</h3>
+        <button
+          className="download-report-btn"
+          onClick={handleDownloadReport}
+          disabled={isGeneratingReport}
+          title="Download Progress Report"
+        >
+          {isGeneratingReport ? '⏳ Generating...' : '📄 Download Report'}
+        </button>
+      </div>
+      
       <div className="stats-grid">
         {stats.map((stat, index) => (
           <div key={index} className="stat-card">
@@ -195,6 +221,7 @@ const AnalyticsOverview: React.FC = () => {
           </div>
         ))}
       </div>
+
     </div>
   );
 };

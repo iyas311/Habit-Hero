@@ -9,8 +9,10 @@ const AnalyticsPage: React.FC = () => {
   return (
     <div className="analytics-page">
       <div className="page-header">
-        <h1>Analytics</h1>
-        <p>Track your progress and see your habits' performance.</p>
+        <div className="header-content">
+          <h1>Analytics</h1>
+          <p>Track your progress and see your habits' performance.</p>
+        </div>
       </div>
       
       {/* Analytics Overview */}

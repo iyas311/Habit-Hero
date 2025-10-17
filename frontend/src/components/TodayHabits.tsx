@@ -25,7 +25,7 @@ const TodayHabits: React.FC<TodayHabitsProps> = ({ onCheckInSuccess }) => {
   const today = new Date().toLocaleDateString('en-CA'); // Returns YYYY-MM-DD in local timezone
 
   // Check if a habit should be shown today based on its frequency
-  const shouldShowHabitToday = (habit: Habit): boolean => {
+  const shouldShowHabitToday = useCallback((habit: Habit): boolean => {
     if (habit.frequency === 'daily') {
       return true; // Daily habits always show
     }
@@ -43,7 +43,7 @@ const TodayHabits: React.FC<TodayHabitsProps> = ({ onCheckInSuccess }) => {
     }
     
     return false; // Unknown frequency
-  };
+  }, [today]);
 
   // Load habits and today's check-ins
   const loadData = useCallback(async () => {
@@ -80,11 +80,11 @@ const TodayHabits: React.FC<TodayHabitsProps> = ({ onCheckInSuccess }) => {
     } finally {
       setLoading(false);
     }
-  }, [today]);
+  }, [today, shouldShowHabitToday]);
 
   useEffect(() => {
     loadData();
-  }, [today]); // Only reload when today's date changes
+  }, [loadData]); // Reload when loadData function changes
 
   // Check if a habit is completed today
   const isHabitCompletedToday = (habitId: number) => {
