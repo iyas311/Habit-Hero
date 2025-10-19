@@ -36,9 +36,6 @@ A modern, full-stack habit tracking application built with React and Flask. Trac
 
 ### 🤖 **AI-Powered Features**
 - **Smart Habit Suggestions**: AI generates personalized habit recommendations based on your existing habits
-- **Goal-Based Recommendations**: Provide your goals and get tailored suggestions
-- **Intelligent Analysis**: AI analyzes your habit patterns and provides insights
-- **Category Intelligence**: AI suggests relevant habit categories
 - **Powered by Google Gemini**: Uses advanced AI for intelligent recommendations
 
 ### 🎨 **Modern UI/UX**
