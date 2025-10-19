@@ -220,34 +220,13 @@ python -m pytest
 
 ## 🚀 Deployment
 
-### **Frontend (Vercel/Netlify)**
+### **Frontend **
 1. Build the React app: `npm run build`
 2. Deploy the `build` folder to your hosting service
 3. Set environment variables for API endpoints
 
-### **Backend (Railway/Heroku)**
+### **Backend **
 1. Create `Procfile`: `web: gunicorn app:app`
 2. Add production database configuration
 3. Deploy with your preferred platform
-
-## 🤝 Contributing
-
-We welcome contributions! Please see [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for:
-- Development workflow
-- Coding standards
-- Commit guidelines
-- Pull request process
-- Testing requirements
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **React Team**: For the amazing framework
-- **Flask Team**: For the lightweight Python framework
-- **Google Gemini AI**: For powerful AI capabilities
-- **ReportLab**: For PDF generation capabilities
-- **Open Source Community**: For inspiration and tools
 
